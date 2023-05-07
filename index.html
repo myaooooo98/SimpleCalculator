@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
     <title>Calculator</title>
 </head>
 <body>
@@ -13,9 +13,9 @@
         <h1>Calculator</h1>
     </header>
     <div class="content">
-        <div id="screen"></div>
+        <div id="display"></div>
+        <button id="clear">C</button>
         <div class="container">
-            <button id="clear">C</button>
             <div id="numberpad">
                 <button class="number">1</button>
                 <button class="number">2</button>
@@ -28,6 +28,7 @@
                 <button class="number">9</button>
                 <button class="number">0</button>
             </div>
+            <button>.</button>
             <div class="operators">
                 <button class="operator">+</button>
                 <button class="operator">-</button>
@@ -36,6 +37,7 @@
             </div>
         </div>
     </div>
+    <button id="equal">=</button>
     <footer>
         <p>Designed by Lee Min Yao</p>
     </footer>
