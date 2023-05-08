@@ -2,6 +2,7 @@ const display = document.getElementById('display');
 const numbers = document.querySelectorAll('.number');
 const operators = document.querySelectorAll('.operator');
 const clear = document.getElementById('clear');
+const equal = document.getElementById('equal');
 
 let displayValue = '';
 
@@ -45,6 +46,11 @@ function displayOnCal(e) {
     display.textContent = displayValue;
 }
 
+function resetDisplay() {
+    display.textContent = '';
+    displayValue = '';   
+}
+
 
 numbers.forEach(number => {
     number.addEventListener('click', e => {
@@ -59,6 +65,14 @@ operators.forEach(operator => {
 });
 
 clear.addEventListener('click', e => {
-    display.textContent = '';
+    resetDisplay();
+});
+
+equal.addEventListener('click', e => {
+    let operator = displayValue.match(/[+, \-, x, ÷]/g).toString();
+    let [num1, num2] = displayValue.split(/[+, \-, x, ÷]/g);
+    let result = operate(num1, num2, operator);
+    resetDisplay();
+    displayOnCal(result);
     displayValue = '';
 });
