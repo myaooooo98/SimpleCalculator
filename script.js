@@ -37,6 +37,8 @@ function operate(number1, number2, operator) {
         case '÷':
             result = divide(number1, number2);
             break;
+        default:
+            throw new Error('Invalid operator');
     }
     return result;
 }
@@ -51,7 +53,6 @@ function resetDisplay() {
     displayValue = '';   
 }
 
-
 numbers.forEach(number => {
     number.addEventListener('click', e => {
         displayOnCal(e.target.textContent);
@@ -64,15 +65,21 @@ operators.forEach(operator => {
     });
 });
 
-clear.addEventListener('click', e => {
-    resetDisplay();
-});
+clear.addEventListener('click', resetDisplay)
 
 equal.addEventListener('click', e => {
     let operator = displayValue.match(/[+, \-, x, ÷]/g).toString();
     let [num1, num2] = displayValue.split(/[+, \-, x, ÷]/g);
+    num1 = parseFloat(num1);
+    num2 = parseFloat(num2);
     let result = operate(num1, num2, operator);
     resetDisplay();
     displayOnCal(result);
     displayValue = '';
+});
+
+window.addEventListener('keydown', e => {
+    let num = document.querySelector(`.number[data-key="${e.keyCode}"]`);
+    if (!num) return;
+    displayOnCal(num.textContent);
 });
