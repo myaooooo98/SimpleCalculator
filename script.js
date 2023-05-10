@@ -3,6 +3,7 @@ const numbers = document.querySelectorAll('.number');
 const operators = document.querySelectorAll('.operator');
 const clear = document.getElementById('clear');
 const equal = document.getElementById('equal');
+const decimal = document.getElementById('decimal');
 
 let displayValue = '';
 
@@ -53,6 +54,17 @@ function resetDisplay() {
     displayValue = '';   
 }
 
+function calculate() {
+    let operator = displayValue.match(/[+, \-, x, ÷]/g).toString();
+    let [num1, num2] = displayValue.split(/[+, \-, x, ÷]/g);
+    num1 = parseFloat(num1);
+    num2 = parseFloat(num2);
+    let result = operate(num1, num2, operator);
+    resetDisplay();
+    displayOnCal(result);
+    displayValue = '';
+}
+
 numbers.forEach(number => {
     number.addEventListener('click', e => {
         displayOnCal(e.target.textContent);
@@ -67,19 +79,36 @@ operators.forEach(operator => {
 
 clear.addEventListener('click', resetDisplay)
 
-equal.addEventListener('click', e => {
-    let operator = displayValue.match(/[+, \-, x, ÷]/g).toString();
-    let [num1, num2] = displayValue.split(/[+, \-, x, ÷]/g);
-    num1 = parseFloat(num1);
-    num2 = parseFloat(num2);
-    let result = operate(num1, num2, operator);
-    resetDisplay();
-    displayOnCal(result);
-    displayValue = '';
-});
+equal.addEventListener('click', calculate);
 
 window.addEventListener('keydown', e => {
+    console.log(e.keyCode, e.key)
     let num = document.querySelector(`.number[data-key="${e.keyCode}"]`);
-    if (!num) return;
-    displayOnCal(num.textContent);
+    if (num) {
+        displayOnCal(num.textContent);
+    }
+
+    let operator = '';
+    if (e.key === '+') {
+        operator = '+';
+    } else if (e.key === '-') {
+        operator = '-';
+    } else if (e.key === '*') {
+        operator = 'x';
+    } else if (e.key === '/') {
+        operator = '÷';
+    } 
+
+    if (operator !== '') {
+        displayOnCal(operator);
+        e.preventDefault();
+    }
+
+    if (e.key === 'Enter' || e.key === '=') {
+        calculate();
+    }
+});
+
+decimal.addEventListener('click', e => {
+    displayOnCal(e.target.textContent);
 });
