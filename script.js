@@ -27,7 +27,7 @@ function operate(number1, number2, operator) {
     let result = null;
     switch (operator) {
         case '+':
-            result =  add(number1, number2);
+            result = add(number1, number2);
             break;
         case '-':
             result = subtract(number1, number2);
@@ -38,8 +38,6 @@ function operate(number1, number2, operator) {
         case '÷':
             result = divide(number1, number2);
             break;
-        default:
-            throw new Error('Invalid operator');
     }
     return result;
 }
@@ -83,7 +81,13 @@ equal.addEventListener('click', calculate);
 
 window.addEventListener('keydown', e => {
     console.log(e.keyCode, e.key)
+
     let num = document.querySelector(`.number[data-key="${e.keyCode}"]`);
+    
+    if (e.key === '*') {    // avoid 8 is inputed when * is pressed
+        num = null;   
+    }
+
     if (num) {
         displayOnCal(num.textContent);
     }
@@ -102,6 +106,10 @@ window.addEventListener('keydown', e => {
     if (operator !== '') {
         displayOnCal(operator);
         e.preventDefault();
+    }
+
+    if (e.key === '.') {
+        displayOnCal(e.key);
     }
 
     if (e.key === 'Enter' || e.key === '=') {
