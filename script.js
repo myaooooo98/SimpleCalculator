@@ -53,8 +53,10 @@ function resetDisplay() {
 }
 
 function calculate() {
-    let operator = displayValue.match(/[+, \-, x, ÷]/g).toString();
-    let [num1, num2] = displayValue.split(/[+, \-, x, ÷]/g);
+    const regex = /(-?\d+(?:\.\d+)?)([+, \-, x, ÷])(-?\d+(?:\.\d+)?)$/;
+    let [_, num1, operator, num2] = displayValue.match(regex);
+    
+    console.log(`num1 = ${num1}`, operator, `num2 = ${num2}`);
     num1 = parseFloat(num1);
     num2 = parseFloat(num2);
     let result = operate(num1, num2, operator);
@@ -80,8 +82,6 @@ clear.addEventListener('click', resetDisplay)
 equal.addEventListener('click', calculate);
 
 window.addEventListener('keydown', e => {
-    console.log(e.keyCode, e.key)
-
     let num = document.querySelector(`.number[data-key="${e.keyCode}"]`);
     
     if (e.key === '*') {    // avoid 8 is inputed when * is pressed
