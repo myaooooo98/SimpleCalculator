@@ -6,6 +6,7 @@ const equal = document.getElementById('equal');
 const decimal = document.getElementById('decimal');
 
 let displayValue = '';
+let result = null;
 
 function add(x, y) {
     return x + y;
@@ -56,13 +57,13 @@ function calculate() {
     const regex = /(-?\d+(?:\.\d+)?)([+, \-, x, ÷])(-?\d+(?:\.\d+)?)$/;
     let [_, num1, operator, num2] = displayValue.match(regex);
     
-    console.log(`num1 = ${num1}`, operator, `num2 = ${num2}`);
+    console.log(_, `num1 = ${num1}`, operator, `num2 = ${num2}`);
     num1 = parseFloat(num1);
     num2 = parseFloat(num2);
-    let result = operate(num1, num2, operator);
+    result = operate(num1, num2, operator);
     resetDisplay();
     displayOnCal(result);
-    displayValue = '';
+    return result;
 }
 
 numbers.forEach(number => {
