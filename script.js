@@ -9,36 +9,20 @@ const decimal = document.getElementById('decimal');
 let displayValue = '';
 let result = null;
 
-function add(x, y) {
-    return x + y;
-}
-
-function subtract(x, y) {
-    return x - y;
-}
-
-function multiply(x, y) {
-    return x * y;
-}
-
-function divide(x, y) {
-    return x / y;
-}
-
 function operate(number1, number2, operator) {
     let result = null;
     switch (operator) {
         case '+':
-            result = add(number1, number2);
+            result = number1 + number2;
             break;
         case '-':
-            result = subtract(number1, number2);
+            result = number1 - number2;
             break;
         case 'x':
-            result = multiply(number1, number2);
+            result = number1 * number2;
             break;
         case '÷':
-            result = divide(number1, number2);
+            result = number1 / number2;
             break;
     }
     return result;
