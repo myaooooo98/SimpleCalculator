@@ -50,6 +50,9 @@ function calculate() {
     console.log(_, `num1 = ${num1}`, operator, `num2 = ${num2}`);
     num1 = parseFloat(num1);
     num2 = parseFloat(num2);
+
+    if(isNaN(num1) || isNaN(num2)) return;
+
     result = operate(num1, num2, operator);
     resetDisplay();
     displayOnCal(result);
@@ -86,18 +89,16 @@ window.addEventListener('keydown', e => {
         displayOnCal(num.textContent);
     }
 
-    let operator = '';
-    if (e.key === '+') {
-        operator = '+';
-    } else if (e.key === '-') {
-        operator = '-';
-    } else if (e.key === '*') {
-        operator = 'x';
-    } else if (e.key === '/') {
-        operator = '÷';
-    } 
+    const operatorMap = {
+        '+': '+',
+        '-': '-',
+        '*': 'x',
+        '/': '÷',
+    };
 
-    if (operator !== '') {
+    const operator = operatorMap[e.key];
+
+    if (operator) {
         displayOnCal(operator);
         e.preventDefault();
     }
@@ -112,6 +113,10 @@ window.addEventListener('keydown', e => {
 
     if (e.key === 'Backspace') {
         deleteValue();
+    }
+
+    if (e.key === 'Escape') {
+        resetDisplay();
     }
 });
 
