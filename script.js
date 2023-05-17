@@ -1,4 +1,4 @@
-const display = document.getElementById('display');
+const displayBox = document.getElementById('display');
 const numbers = document.querySelectorAll('.number');
 const operators = document.querySelectorAll('.operator');
 const clear = document.getElementById('clear');
@@ -10,83 +10,89 @@ let displayValue = '';
 let result = null;
 
 function operate(number1, number2, operator) {
-    let result = null;
     switch (operator) {
         case '+':
-            result = number1 + number2;
-            break;
+            return number1 + number2;
         case '-':
-            result = number1 - number2;
-            break;
+            return number1 - number2;
         case 'x':
-            result = number1 * number2;
-            break;
+            return number1 * number2;
         case '÷':
-            result = number1 / number2;
-            break;
+            return number1 / number2;
+        default:
+            return null;
     }
-    return result;
 }
 
-function displayOnCal(e) {
-    displayValue += e;
-    display.textContent = displayValue;
-}
+function updateDisplay(value) {
+    if (value === 'reset') {
+        displayValue = '';
+    } else if (value === 'delete') {
+        displayValue = displayValue.slice(0, -1);
+    } else if (value === 'error') {
+        displayValue = 'ERROR';
+    } else {
+        displayValue += value
+    }
 
-function resetDisplay() {
-    display.textContent = '';
-    displayValue = '';   
-}
-
-function deleteValue() {
-    displayValue = displayValue.slice(0, -1);
-    display.textContent = displayValue; 
+    displayBox.textContent = displayValue;
 }
 
 function calculate() {
-    const regex = /(-?\d+(?:\.\d+)?)([+, \-, x, ÷])(-?\d+(?:\.\d+)?)$/;
-    let [_, num1, operator, num2] = displayValue.match(regex);
-    
+    const regex = /(-?\d+(?:\.\d+)?)([+\-x\÷])(-?\d+(?:\.\d+)?)$/;
+    let match = displayValue.match(regex);
+
+    if (!match) return updateDisplay('error');
+
+    let [_, num1, operator, num2] = match;
     console.log(_, `num1 = ${num1}`, operator, `num2 = ${num2}`);
     num1 = parseFloat(num1);
     num2 = parseFloat(num2);
 
-    if(isNaN(num1) || isNaN(num2)) return;
+    if(isNaN(num1) || isNaN(num2)) return updateDisplay('error');
 
     result = operate(num1, num2, operator);
-    resetDisplay();
-    displayOnCal(result);
+    updateDisplay('reset');
+    updateDisplay(result);
     return result;
 }
 
 numbers.forEach(number => {
     number.addEventListener('click', e => {
-        displayOnCal(e.target.textContent);
+     updateDisplay(e.target.textContent);
     });
 });
 
 operators.forEach(operator => {
     operator.addEventListener('click', e => {
-        displayOnCal(e.target.textContent);
+     updateDisplay(e.target.textContent);
     });
 });
 
-clear.addEventListener('click', resetDisplay);
+clear.addEventListener('click', () => {
+    updateDisplay('reset')
+});
 
-deleteBtn.addEventListener('click', deleteValue);
+deleteBtn.addEventListener('click', () => {
+    updateDisplay('delete')
+});
 
 equal.addEventListener('click', calculate);
 
+decimal.addEventListener('click', e => {
+    updateDisplay(e.target.textContent);
+   });
+
 window.addEventListener('keydown', e => {
     console.log(e.keyCode, e.key);
-    let num = document.querySelector(`.number[data-key="${e.keyCode}"]`);
+    let num = document.querySelector(`.number[data-key="${e.key}"]`);
     
     if (e.key === '*') {    // avoid 8 is inputed when * is pressed
         num = null;   
     }
 
     if (num) {
-        displayOnCal(num.textContent);
+     updateDisplay(num.textContent);
     }
 
     const operatorMap = {
@@ -99,12 +105,12 @@ window.addEventListener('keydown', e => {
     const operator = operatorMap[e.key];
 
     if (operator) {
-        displayOnCal(operator);
+     updateDisplay(operator);
         e.preventDefault();
     }
 
     if (e.key === '.') {
-        displayOnCal(e.key);
+     updateDisplay(e.key);
     }
 
     if (e.key === 'Enter' || e.key === '=') {
@@ -112,14 +118,10 @@ window.addEventListener('keydown', e => {
     }
 
     if (e.key === 'Backspace') {
-        deleteValue();
+        updateDisplay('delete');
     }
 
     if (e.key === 'Escape') {
-        resetDisplay();
+        updateDisplay('reset');
     }
-});
-
-decimal.addEventListener('click', e => {
-    displayOnCal(e.target.textContent);
 });
