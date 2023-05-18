@@ -8,6 +8,7 @@ const decimal = document.getElementById('decimal');
 
 let displayValue = '';
 let result = null;
+let isCalculate = false;
 
 function operate(number1, number2, operator) {
     switch (operator) {
@@ -25,16 +26,18 @@ function operate(number1, number2, operator) {
 }
 
 function updateDisplay(value) {
-    if (value === 'reset') {
+    if (value === 'clear') {
         displayValue = '';
     } else if (value === 'delete') {
         displayValue = displayValue.slice(0, -1);
     } else if (value === 'error') {
         displayValue = 'ERROR';
     } else {
+        if (isCalculate && result !== null && !isNaN(value)) {
+            displayValue = '';
+        } 
         displayValue += value
     }
-
     displayBox.textContent = displayValue;
 }
 
@@ -52,25 +55,26 @@ function calculate() {
     if(isNaN(num1) || isNaN(num2)) return updateDisplay('error');
 
     result = operate(num1, num2, operator);
-    updateDisplay('reset');
+    updateDisplay('clear');
     updateDisplay(result);
+    isCalculate = !isCalculate;
     return result;
 }
 
 numbers.forEach(number => {
     number.addEventListener('click', e => {
-     updateDisplay(e.target.textContent);
+        updateDisplay(e.target.dataset.key);
     });
 });
 
 operators.forEach(operator => {
     operator.addEventListener('click', e => {
-     updateDisplay(e.target.textContent);
+        updateDisplay(e.target.dataset.key);
     });
 });
 
 clear.addEventListener('click', () => {
-    updateDisplay('reset')
+    updateDisplay('clear')
 });
 
 deleteBtn.addEventListener('click', () => {
@@ -80,8 +84,8 @@ deleteBtn.addEventListener('click', () => {
 equal.addEventListener('click', calculate);
 
 decimal.addEventListener('click', e => {
-    updateDisplay(e.target.textContent);
-   });
+    updateDisplay(e.target.dataset.key);
+});
 
 window.addEventListener('keydown', e => {
     console.log(e.keyCode, e.key);
@@ -122,6 +126,6 @@ window.addEventListener('keydown', e => {
     }
 
     if (e.key === 'Escape') {
-        updateDisplay('reset');
+        updateDisplay('clear');
     }
 });
