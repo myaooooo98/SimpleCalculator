@@ -13,7 +13,10 @@
         <h1>Calculator</h1>
     </header>
     <div class="content">
-        <div id="display"></div>
+        <div id="display">
+            <div class="equation"></div>
+            <div class="result">0</div>
+        </div>
         <button id="clear" data-key="Escape">C</button>
         <button id="delete" data-key="Backspace">DEL</button>
         <div class="container">
@@ -37,8 +40,8 @@
                 <button class="operator" data-key="/">÷</button>
             </div>
         </div>
+        <button id="equal" data-key="Enter">=</button> 
     </div>
-    <button id="equal" data-key="Enter">=</button>
     <footer>
         <p>Designed by Lee Min Yao</p>
     </footer>

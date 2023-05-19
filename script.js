@@ -1,4 +1,6 @@
 const displayBox = document.getElementById('display');
+const displayEquation = displayBox.querySelector('.equation');
+const displayResult = displayBox.querySelector('.result')
 const numbers = document.querySelectorAll('.number');
 const operators = document.querySelectorAll('.operator');
 const clear = document.getElementById('clear');
@@ -8,7 +10,13 @@ const decimal = document.getElementById('decimal');
 
 let displayValue = '';
 let result = null;
-let isCalculate = false;
+
+function defaultSettings() {
+    displayValue = '';
+    result = null;
+    displayEquation.textContent = '';
+    displayResult.textContent = '0';
+}
 
 function operate(number1, number2, operator) {
     switch (operator) {
@@ -26,19 +34,18 @@ function operate(number1, number2, operator) {
 }
 
 function updateDisplay(value) {
-    if (value === 'clear') {
-        displayValue = '';
-    } else if (value === 'delete') {
+    if (value === 'Backspace') {
         displayValue = displayValue.slice(0, -1);
     } else if (value === 'error') {
-        displayValue = 'ERROR';
+        displayValue = 'MATH ERROR';
     } else {
-        if (isCalculate && result !== null && !isNaN(value)) {
-            displayValue = '';
-        } 
         displayValue += value
     }
-    displayBox.textContent = displayValue;
+    displayEquation.textContent = displayValue;
+}
+
+function updateResult(value) {
+    displayResult.textContent = value;
 }
 
 function calculate() {
@@ -55,9 +62,7 @@ function calculate() {
     if(isNaN(num1) || isNaN(num2)) return updateDisplay('error');
 
     result = operate(num1, num2, operator);
-    updateDisplay('clear');
-    updateDisplay(result);
-    isCalculate = !isCalculate;
+    updateResult(result);
     return result;
 }
 
@@ -73,12 +78,10 @@ operators.forEach(operator => {
     });
 });
 
-clear.addEventListener('click', () => {
-    updateDisplay('clear')
-});
+clear.addEventListener('click', defaultSettings);
 
-deleteBtn.addEventListener('click', () => {
-    updateDisplay('delete')
+deleteBtn.addEventListener('click', (e) => {
+    updateDisplay(e.target.dataset.key);
 });
 
 equal.addEventListener('click', calculate);
@@ -96,7 +99,7 @@ window.addEventListener('keydown', e => {
     }
 
     if (num) {
-     updateDisplay(num.textContent);
+     updateDisplay(e.key);
     }
 
     const operatorMap = {
@@ -122,10 +125,10 @@ window.addEventListener('keydown', e => {
     }
 
     if (e.key === 'Backspace') {
-        updateDisplay('delete');
+        updateDisplay(e.key);
     }
 
     if (e.key === 'Escape') {
-        updateDisplay('clear');
+        defaultSettings();
     }
 });
