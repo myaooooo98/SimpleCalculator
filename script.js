@@ -7,6 +7,14 @@ const clear = document.getElementById('clear');
 const deleteBtn = document.getElementById('delete');
 const equal = document.getElementById('equal');
 const decimal = document.getElementById('decimal');
+const items = document.querySelectorAll('.item');
+
+const operatorMap = {
+    '+': '+',
+    '-': '-',
+    '*': 'x',
+    '/': '÷',
+};
 
 let displayValue = '';
 let result = null;
@@ -36,8 +44,6 @@ function operate(number1, number2, operator) {
 function updateDisplay(value) {
     if (value === 'Backspace') {
         displayValue = displayValue.slice(0, -1);
-    } else if (value === 'error') {
-        displayValue = 'MATH ERROR';
     } else {
         displayValue += value
     }
@@ -48,33 +54,37 @@ function updateResult(value) {
     displayResult.textContent = value;
 }
 
+function mathError() {
+    displayValue = '';
+    displayEquation.textContent = '';
+    displayResult.textContent = 'MATH ERROR';
+}
+
 function calculate() {
     const regex = /(-?\d+(?:\.\d+)?)([+\-x\÷])(-?\d+(?:\.\d+)?)$/;
     let match = displayValue.match(regex);
 
-    if (!match) return updateDisplay('error');
+    if (!match) return mathError();
 
     let [_, num1, operator, num2] = match;
     console.log(_, `num1 = ${num1}`, operator, `num2 = ${num2}`);
-    num1 = parseFloat(num1);
-    num2 = parseFloat(num2);
+    const parsedNum1 = parseFloat(num1);
+    const parsedNum2 = parseFloat(num2);
 
-    if(isNaN(num1) || isNaN(num2)) return updateDisplay('error');
+    if(isNaN(parsedNum1) || isNaN(parsedNum2)) return mathError();
 
-    result = operate(num1, num2, operator);
+    result = operate(parsedNum1, parsedNum2, operator);
     updateResult(result);
     return result;
 }
 
-numbers.forEach(number => {
-    number.addEventListener('click', e => {
-        updateDisplay(e.target.dataset.key);
-    });
-});
-
-operators.forEach(operator => {
-    operator.addEventListener('click', e => {
-        updateDisplay(e.target.dataset.key);
+items.forEach(item => {
+    item.addEventListener('click', e => {
+        let key = e.target.dataset.key;
+        if (key === '*' || key === '/') {
+            key = operatorMap[key];
+        }
+        updateDisplay(key);
     });
 });
 
@@ -85,10 +95,6 @@ deleteBtn.addEventListener('click', (e) => {
 });
 
 equal.addEventListener('click', calculate);
-
-decimal.addEventListener('click', e => {
-    updateDisplay(e.target.dataset.key);
-});
 
 window.addEventListener('keydown', e => {
     console.log(e.keyCode, e.key);
@@ -102,22 +108,15 @@ window.addEventListener('keydown', e => {
      updateDisplay(e.key);
     }
 
-    const operatorMap = {
-        '+': '+',
-        '-': '-',
-        '*': 'x',
-        '/': '÷',
-    };
-
     const operator = operatorMap[e.key];
 
     if (operator) {
-     updateDisplay(operator);
+        updateDisplay(operator);
         e.preventDefault();
     }
 
     if (e.key === '.') {
-     updateDisplay(e.key);
+        updateDisplay(e.key);
     }
 
     if (e.key === 'Enter' || e.key === '=') {
