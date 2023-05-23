@@ -44,6 +44,14 @@ function operate(number1, number2, operator) {
 function updateDisplay(value) {
     if (value === 'Backspace') {
         displayValue = displayValue.slice(0, -1);
+    } else if (!isNaN(parseFloat(value))) {
+        if (result !== null) {
+            defaultSettings();
+            displayValue += value;
+        } else {
+            displayValue += value;
+            result = null;
+        }
     } else {
         displayValue += value
     }
@@ -51,6 +59,7 @@ function updateDisplay(value) {
 }
 
 function updateResult(value) {
+    displayValue = value;
     displayResult.textContent = value;
 }
 
