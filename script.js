@@ -50,7 +50,6 @@ function updateDisplay(value) {
             displayValue += value;
         } else {
             displayValue += value;
-            result = null;
         }
     } else {
         displayValue += value
