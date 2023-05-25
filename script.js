@@ -1,12 +1,9 @@
 const displayBox = document.getElementById('display');
 const displayEquation = displayBox.querySelector('.equation');
 const displayResult = displayBox.querySelector('.result')
-const numbers = document.querySelectorAll('.number');
-const operators = document.querySelectorAll('.operator');
 const clear = document.getElementById('clear');
 const deleteBtn = document.getElementById('delete');
 const equal = document.getElementById('equal');
-const decimal = document.getElementById('decimal');
 const items = document.querySelectorAll('.item');
 
 const operatorMap = {
@@ -44,13 +41,15 @@ function operate(number1, number2, operator) {
 function updateDisplay(value) {
     if (value === 'Backspace') {
         displayValue = displayValue.slice(0, -1);
-    } else if (!isNaN(parseFloat(value))) {
-        if (result !== null) {
+    } else if (result !== null) {
+        if (!isNaN(parseFloat(value))) {
             defaultSettings();
             displayValue += value;
         } else {
             displayValue += value;
-        }
+            result = null;
+            console.log(displayValue, result);
+        } 
     } else {
         displayValue += value
     }
