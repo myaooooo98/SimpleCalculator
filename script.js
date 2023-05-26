@@ -1,9 +1,9 @@
 const displayBox = document.getElementById('display');
 const displayEquation = displayBox.querySelector('.equation');
 const displayResult = displayBox.querySelector('.result')
-const clear = document.getElementById('clear');
+const clearBtn = document.getElementById('clear');
 const deleteBtn = document.getElementById('delete');
-const equal = document.getElementById('equal');
+const equalBtn = document.getElementById('equal');
 const items = document.querySelectorAll('.item');
 
 const operatorMap = {
@@ -32,7 +32,8 @@ function operate(number1, number2, operator) {
         case 'x':
             return number1 * number2;
         case '÷':
-            return number1 / number2;
+            if (number2 === 0) return null;
+            else return number1 / number2;
         default:
             return null;
     }
@@ -67,6 +68,13 @@ function mathError() {
     displayResult.textContent = 'MATH ERROR';
 }
 
+function decimal(period) {
+    if (displayValue.includes('.')) return;
+    if (displayValue === '') {
+        updateDisplay('0');
+    }
+}
+
 function calculate() {
     const regex = /(-?\d+(?:\.\d+)?)([+\-x\÷])(-?\d+(?:\.\d+)?)$/;
     let match = displayValue.match(regex);
@@ -90,18 +98,20 @@ items.forEach(item => {
         let key = e.target.dataset.key;
         if (key === '*' || key === '/') {
             key = operatorMap[key];
+        } else if (key === '.') {
+            decimal(key);
         }
         updateDisplay(key);
     });
 });
 
-clear.addEventListener('click', defaultSettings);
+clearBtn.addEventListener('click', defaultSettings);
 
 deleteBtn.addEventListener('click', (e) => {
     updateDisplay(e.target.dataset.key);
 });
 
-equal.addEventListener('click', calculate);
+equalBtn.addEventListener('click', calculate);
 
 window.addEventListener('keydown', e => {
     console.log(e.keyCode, e.key);
@@ -123,7 +133,7 @@ window.addEventListener('keydown', e => {
     }
 
     if (e.key === '.') {
-        updateDisplay(e.key);
+        decimal(e.key);
     }
 
     if (e.key === 'Enter' || e.key === '=') {
