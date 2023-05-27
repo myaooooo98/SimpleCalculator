@@ -16,6 +16,10 @@ const operatorMap = {
 let displayValue = '';
 let result = null;
 
+// revise the function calculation, discaed using displayValue to do calculation
+let firstOperand = '';
+let secondOperand = '';
+
 function defaultSettings() {
     displayValue = '';
     result = null;
@@ -68,11 +72,15 @@ function mathError() {
     displayResult.textContent = 'MATH ERROR';
 }
 
-function decimal(period) {
+function decimal() {
     if (displayValue.includes('.')) return;
     if (displayValue === '') {
         updateDisplay('0');
     }
+}
+
+function percentageConverter(num) {
+    return num / 100;
 }
 
 function calculate() {
@@ -82,7 +90,7 @@ function calculate() {
     if (!match) return mathError();
 
     let [_, num1, operator, num2] = match;
-    console.log(_, `num1 = ${num1}`, operator, `num2 = ${num2}`);
+    if (operator === '÷' && num2 === '0') return mathError();
     const parsedNum1 = parseFloat(num1);
     const parsedNum2 = parseFloat(num2);
 
@@ -99,7 +107,7 @@ items.forEach(item => {
         if (key === '*' || key === '/') {
             key = operatorMap[key];
         } else if (key === '.') {
-            decimal(key);
+            decimal();
         }
         updateDisplay(key);
     });
@@ -133,7 +141,7 @@ window.addEventListener('keydown', e => {
     }
 
     if (e.key === '.') {
-        decimal(e.key);
+        decimal();
     }
 
     if (e.key === 'Enter' || e.key === '=') {
