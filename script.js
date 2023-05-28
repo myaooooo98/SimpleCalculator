@@ -1,6 +1,6 @@
 const displayBox = document.getElementById('display');
-const displayEquation = displayBox.querySelector('.equation');
-const displayResult = displayBox.querySelector('.result')
+const referenceScreen = displayBox.querySelector('.reference');
+const displayScreen = displayBox.querySelector('.result')
 const clearBtn = document.getElementById('clear');
 const deleteBtn = document.getElementById('delete');
 const equalBtn = document.getElementById('equal');
@@ -19,12 +19,13 @@ let result = null;
 // revise the function calculation, discaed using displayValue to do calculation
 let firstOperand = '';
 let secondOperand = '';
+let resetScreen = false;
 
 function defaultSettings() {
     displayValue = '';
     result = null;
-    displayEquation.textContent = '';
-    displayResult.textContent = '0';
+    referenceScreen.textContent = '';
+    displayScreen.textContent = '0';
 }
 
 function operate(number1, number2, operator) {
@@ -36,8 +37,7 @@ function operate(number1, number2, operator) {
         case 'x':
             return number1 * number2;
         case '÷':
-            if (number2 === 0) return null;
-            else return number1 / number2;
+            return number1 / number2;
         default:
             return null;
     }
@@ -58,18 +58,18 @@ function updateDisplay(value) {
     } else {
         displayValue += value
     }
-    displayEquation.textContent = displayValue;
+    referenceScreen.textContent = displayValue;
 }
 
 function updateResult(value) {
     displayValue = value;
-    displayResult.textContent = value;
+    displayScreen.textContent = value;
 }
 
-function mathError() {
+function mathError(message) {
     displayValue = '';
-    displayEquation.textContent = '';
-    displayResult.textContent = 'MATH ERROR';
+    referenceScreen.textContent = '';
+    displayScreen.textContent = message;
 }
 
 function decimal() {
@@ -83,18 +83,22 @@ function percentageConverter(num) {
     return num / 100;
 }
 
+function plusMinueConverter(num) {
+    return num *= -1;
+}
+
 function calculate() {
     const regex = /(-?\d+(?:\.\d+)?)([+\-x\÷])(-?\d+(?:\.\d+)?)$/;
     let match = displayValue.match(regex);
 
-    if (!match) return mathError();
+    if (!match) return mathError('MATH ERROR');
 
     let [_, num1, operator, num2] = match;
-    if (operator === '÷' && num2 === '0') return mathError();
+    if (operator === '÷' && num2 === 0) return mathError('Infinity');
     const parsedNum1 = parseFloat(num1);
     const parsedNum2 = parseFloat(num2);
 
-    if(isNaN(parsedNum1) || isNaN(parsedNum2)) return mathError();
+    if(isNaN(parsedNum1) || isNaN(parsedNum2)) return mathError('MATH ERROR');
 
     result = operate(parsedNum1, parsedNum2, operator);
     updateResult(result);
