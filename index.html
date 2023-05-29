@@ -12,37 +12,37 @@
     <header>
         <h1>Calculator</h1>
     </header>
-    <div class="content">
-        <div id="display">
-            <div class="reference"></div>
-            <div class="result">0</div>
+    <div class="calculator">
+        <div id="calculator-display">
+            <div class="previous-operand"></div>
+            <div class="current-operand">0</div>
         </div>
-        <button class="item" id="clear" data-key="Escape">C</button>
-        <button class="item" id="delete" data-key="Backspace">DEL</button>
-        <div class="container">
+        <div id="calculator-keys">
+            <button data-action="clear">C</button>
+            <button data-action="delete">DEL</button>
             <div id="numberpad">
-                <button class="number item" data-key="1">1</button>
-                <button class="number item" data-key="2">2</button>
-                <button class="number item" data-key="3">3</button>
-                <button class="number item" data-key="4">4</button>
-                <button class="number item" data-key="5">5</button>
-                <button class="number item" data-key="6">6</button>
-                <button class="number item" data-key="7">7</button>
-                <button class="number item" data-key="8">8</button>
-                <button class="number item" data-key="9">9</button>
-                <button class="number item" data-key="0">0</button>
+                <button data-number>1</button>
+                <button data-number>2</button>
+                <button data-number>3</button>
+                <button data-number>4</button>
+                <button data-number>5</button>
+                <button data-number>6</button>
+                <button data-number>7</button>
+                <button data-number>8</button>
+                <button data-number>9</button>
+                <button data-number>0</button>
             </div>
-            <button class="item" id="decimal" data-key=".">.</button>
-            <div class="operators">
-                <button class="operator item" data-key="+">+</button>
-                <button class="operator item" data-key="-">-</button>
-                <button class="operator item" data-key="*">x</button>
-                <button class="operator item" data-key="/">÷</button>
+            <button data-action="decimal">.</button>
+            <div id="operators">
+                <button data-action="add">+</button>
+                <button data-action="subtract">-</button>
+                <button data-action="multiply">&times;</button>
+                <button data-action="divide">÷</button>
             </div>
+            <button data-action="plus-minus">+/-</button>
+            <button data-action="percentage">%</button>
+            <button data-action="operate">=</button> 
         </div>
-        <button id="plus-minus">+/-</button>
-        <button id="percentage" data-key="%">%</button>
-        <button id="equal" data-key="Enter">=</button> 
     </div>
     <footer>
         <p>Designed by Lee Min Yao</p>
