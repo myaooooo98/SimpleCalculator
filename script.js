@@ -18,8 +18,10 @@ let operator = null;
 let modValue = null;
 
 function operate(a, b, operator) {
-    let num1 = parseFloat(a);
-    let num2 = parseFloat(b);
+    // carry out the mathematical operation
+    let num1 = checkPercentageNum(a, 100);
+    let num2 = checkPercentageNum(b, num1);
+    
     switch (operator) {
         case 'add':
             return num1 + num2;
@@ -32,6 +34,24 @@ function operate(a, b, operator) {
         default:
             return 0;
     }
+}
+
+function checkPercentageNum(value, wholeNum) {
+    // to check whether it is a percentage
+    const regex = /-?\d+(?:\.\d+)?%$/;
+    if (regex.test(value)) {
+        let partValue = parseFloat(value) / 100;
+        if (wholeNum !== 100) {
+            return partValue * wholeNum;
+        }
+        return partValue;
+    } else {
+        return parseFloat(value);
+    }
+}
+
+function roundNum(num) {
+    return num.toFixed(6);
 }
 
 function getKeyType(key) {
@@ -48,43 +68,69 @@ function getKeyType(key) {
     return action;
 }
 
-function updateCalculatorState(key, calculator) {
+function updateDisplay(key, displayNum, calculator) {
     const keyType = getKeyType(key);
-    calculator.dataset.previousKey = keyType;
-    return calculator.dataset.previousKey;
-}
-
-function updateDisplay(key, displayNum, state) {
-    const keyType = getKeyType(key);
-    const previousKey = updateCalculatorState(key, state);
+    const previousKey = calculator.dataset.previousKey;
     const keyContent  = key.textContent;
+
+    calculator.dataset.previousKey = keyType;
 
     if (keyType === 'number') {
         return displayNum === '0' ||
             previousKey === 'operator' ||
-            previousKey === 'operate'
+            previousKey === 'operate' ||
+            displayNum.includes('%')
             ? keyContent
             : displayNum + keyContent;
     }
 
     if (keyType === 'decimal') {
-        if (!displayNum.includes('.')) return displayNum + keyContent;
         if (
             previousKey === 'operator' ||
             previousKey === 'operate'
         ) return '0.';
+        // ensure no '.' can be inputted after there already have decimal or '%' in the string
+        if (!displayNum.includes('.') && !displayNum.includes('%')) return displayNum + keyContent;
 
         // if it does not fit neither condition, eg: already have '.' but '.' is hit again
         return displayNum;
     }
 
     if (keyType === 'operator' || keyType === 'operate') {
-        return calculation(key, displayNum, previousKey, firstOperand, operator, modValue);
+        return calculation(key, displayNum, previousKey);
     }
 
     if (keyType === 'clear') {
         resetDefault();
         return '0';
+    }
+
+    if (keyType === 'delete') {
+        if (displayNum === '0' || previousKey === 'clear' || previousKey === 'operate' || previousKey === 'plus-minus') {
+            return '0';
+        } else if (previousKey === 'operator') {
+            operator = null;
+        } else {
+            return displayNum.slice(0, -1)
+        }
+    }
+
+    if (keyType === 'plus-minus') {
+        // if the user change the sign after clicked the operator (reset it)
+        if (previousKey === 'operate') {
+            operator = null;
+        }
+        if (previousKey === 'operator') {
+            firstOperand = null;
+            operator = null;
+        }
+        return displayNum *= -1;
+    }
+
+    if (keyType === 'percentage') {
+        if (!displayNum.includes('%')) return displayNum + keyContent;
+        
+        return displayNum;
     }
 }
 
@@ -94,11 +140,10 @@ function resetDefault() {
     operator = null;
 }
 
-function calculation(key, displayNum, state, firstOperand, operator, modValue) {
+function calculation(key, displayNum, previousState) {
     const action = key.dataset.action;
-    const firstValue = firstOperand;
+    let firstValue = firstOperand;
     const selectedOperator = operator;
-    const secondValue = displayNum;
 
     if (
         action === 'add' ||
@@ -106,25 +151,26 @@ function calculation(key, displayNum, state, firstOperand, operator, modValue) {
         action === 'multiply' ||
         action === 'divide'
     ) {
-        operator = action;
         firstOperand = firstValue &&
             selectedOperator &&
-            state !== 'operator' &&
-            state !== 'calculator'
-            ? operate(firstValue, secondValue, selectedOperator)
+            previousState !== 'operator' &&
+            previousState !== 'operate'
+            ? roundNum(operate(firstValue, displayNum, selectedOperator))
             : displayNum;
+
+        operator = action;
         return firstOperand;
     }
     
-    if (action === 'calculate') {
+    if (action === 'operate') {
+        modValue = firstValue && previousState === 'operate'
+            ? modValue
+            : displayNum;
+            
         if (firstValue) {
-            modValue = state === 'calculate'
-                ? modValue
-                : displayNum;
-            firstOperand = state === 'calculate'
-                ? operate(firstValue, modValue, selectedOperator)
-                : operate(firstValue, secondValue, selectedOperator);
-            return firstOperand;
+            return previousState === 'operate'
+                ? roundNum(operate(displayNum, modValue, selectedOperator))
+                : roundNum(operate(firstValue, displayNum, selectedOperator));
         } else {
             return displayNum;
         }
