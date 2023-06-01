@@ -16,6 +16,7 @@ const operatorMap = {
 let firstOperand = null;
 let operator = null;
 let modValue = null;
+let display = '';
 
 function operate(a, b, operator) {
     // carry out the mathematical operation
@@ -40,21 +41,21 @@ function checkPercentageNum(value, wholeNum) {
     // to check whether it is a percentage
     const regex = /-?\d+(?:\.\d+)?%$/;
     if (regex.test(value)) {
-        let partValue = parseFloat(value) / 100;
-        if (wholeNum !== 100) {
-            return partValue * wholeNum;
-        }
-        return partValue;
+        return wholeNum!== 100
+            ? parseFloat(value) / 100 * wholeNum
+            : parseFloat(value) / wholeNum;
     } else {
         return parseFloat(value);
     }
 }
 
 function roundNum(num) {
-    return num.toFixed(6);
+    // round of the answer to 6 decimal places
+    return parseFloat(num.toFixed(6));
 }
 
 function getKeyType(key) {
+    // classified the key based on data-action
     const action = key.dataset.action;
     if (!action) return 'number';
     if (
@@ -69,11 +70,13 @@ function getKeyType(key) {
 }
 
 function updateDisplay(key, displayNum, calculator) {
+    // update the currentOperandDisplay
     const keyType = getKeyType(key);
     const previousKey = calculator.dataset.previousKey;
     const keyContent  = key.textContent;
 
     calculator.dataset.previousKey = keyType;
+    updateOperand(keyType, previousKey);
 
     if (keyType === 'number') {
         return displayNum === '0' ||
@@ -106,31 +109,48 @@ function updateDisplay(key, displayNum, calculator) {
     }
 
     if (keyType === 'delete') {
-        if (displayNum === '0' || previousKey === 'clear' || previousKey === 'operate' || previousKey === 'plus-minus') {
+        if (displayNum.match(/^-?\d$/) || 
+        previousKey === 'clear' || 
+        previousKey === 'operate' || 
+        previousKey === 'plus-minus'
+        ) {
             return '0';
         } else if (previousKey === 'operator') {
-            operator = null;
+            return displayNum;
         } else {
-            return displayNum.slice(0, -1)
+            return displayNum.slice(0, -1);
         }
     }
 
     if (keyType === 'plus-minus') {
-        // if the user change the sign after clicked the operator (reset it)
-        if (previousKey === 'operate') {
-            operator = null;
-        }
-        if (previousKey === 'operator') {
-            firstOperand = null;
-            operator = null;
-        }
         return displayNum *= -1;
     }
 
     if (keyType === 'percentage') {
         if (!displayNum.includes('%')) return displayNum + keyContent;
-        
         return displayNum;
+    }
+}
+
+function updateOperand(keyType, previousState) {
+    if (keyType === 'number') {
+        if (previousState === 'operate') {
+            firstOperand = null;
+            operator = null;
+        }
+    }
+
+    if (keyType === 'delete') {
+        if (previousState === 'operator') operator = null;
+    }
+
+    if (keyType === 'plus-minus') {
+         // if the user change the sign after clicked the operator (reset it)
+        if (previousState === 'operate') operator = null;
+        if (previousState === 'operator') {
+            firstOperand = null;
+            operator = null;
+        }
     }
 }
 
@@ -177,6 +197,7 @@ function calculation(key, displayNum, previousState) {
     }
 }
 
+// when user clicked the button
 keys.addEventListener('click' , e => {
     if (!e.target.matches('button')) return;
 
@@ -185,6 +206,11 @@ keys.addEventListener('click' , e => {
     const updatedString = updateDisplay(key, displayNum, calculator);
 
     currentOperandDisplay.textContent = updatedString;
+});
+
+// when user using keyboard
+window.addEventListener('keydown', e => {
+    
 });
 
 // keys.addEventListener('click', e => {
