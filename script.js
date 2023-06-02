@@ -2,27 +2,32 @@ const calculator = document.querySelector('.calculator');
 const displayBox = document.getElementById('calculator-display');
 const previousOperandDisplay = displayBox.querySelector('.previous-operand');
 const currentOperandDisplay = displayBox.querySelector('.current-operand')
-const numberBtns = document.querySelectorAll('[data-number]');
-const actionBtns = document.querySelectorAll('[data-action]');
 const keys = document.getElementById('calculator-keys');
 
-const operatorMap = {
+const keydownMapper = {
     '+': 'add',
     '-': 'subtract',
     '*': 'multiply',
     '/': 'divide',
+    '.': 'decimal',
+    '%': 'percentage',
+    '=': 'operate',
+    'Enter': 'operate',
+    'Backspace': 'delete',
+    'Escape': 'clear',
 };
 
 let firstOperand = null;
 let operator = null;
 let modValue = null;
-let display = '';
 
 function operate(a, b, operator) {
     // carry out the mathematical operation
     let num1 = checkPercentageNum(a, 100);
     let num2 = checkPercentageNum(b, num1);
     
+    lastOperationDisplay(a, b, operator)
+
     switch (operator) {
         case 'add':
             return num1 + num2;
@@ -35,6 +40,12 @@ function operate(a, b, operator) {
         default:
             return 0;
     }
+}
+
+function lastOperationDisplay(firstValue, secondValue, operator) {
+    const operatorMap = document.querySelector(`[data-action="${operator}"]`).textContent;
+    
+    return previousOperandDisplay.textContent = `${firstValue} ${operatorMap} ${secondValue} =`
 }
 
 function checkPercentageNum(value, wholeNum) {
@@ -104,7 +115,6 @@ function updateDisplay(key, displayNum, calculator) {
     }
 
     if (keyType === 'clear') {
-        resetDefault();
         return '0';
     }
 
@@ -152,12 +162,12 @@ function updateOperand(keyType, previousState) {
             operator = null;
         }
     }
-}
 
-function resetDefault() {
-    firstOperand = null;
-    modValue = null;
-    operator = null;
+    if (keyType === 'clear') {
+        firstOperand = null;
+        modValue = null;
+        operator = null;
+    }
 }
 
 function calculation(key, displayNum, previousState) {
@@ -188,14 +198,16 @@ function calculation(key, displayNum, previousState) {
             : displayNum;
             
         if (firstValue) {
-            return previousState === 'operate'
+            firstOperand = previousState === 'operate'
                 ? roundNum(operate(displayNum, modValue, selectedOperator))
                 : roundNum(operate(firstValue, displayNum, selectedOperator));
         } else {
-            return displayNum;
+            firstOperand = displayNum;
         }
+        return firstOperand
     }
 }
+
 
 // when user clicked the button
 keys.addEventListener('click' , e => {
@@ -210,7 +222,26 @@ keys.addEventListener('click' , e => {
 
 // when user using keyboard
 window.addEventListener('keydown', e => {
+    let key = null;
+    let targetBtn = null;
+    const displayNum = currentOperandDisplay.textContent;
+
+    if (e.key >= 0 && e.key <= 9) {
+        key = e.key;
+        targetBtn = document.querySelector(`[data-number="${key}"]`);
+    }
+
+    if (!targetBtn) {
+        key = keydownMapper[e.key];
+        targetBtn = document.querySelector(`[data-action=${key}]`)
+    }
+
+    // stop updateDisplay to be carry out with null object
+    if (!targetBtn) return;
     
+    const updatedString = updateDisplay(targetBtn, displayNum, calculator);
+
+    currentOperandDisplay.textContent = updatedString;
 });
 
 // keys.addEventListener('click', e => {

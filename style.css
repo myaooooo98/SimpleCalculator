@@ -1,20 +1,3 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-div.content {
-    border: 1px solid black;
-    width: 400px;
-    height: 600px;
-}
-
-#display .equation, .result {
-    border: 1px solid black;
-    height: 50px;
-}
-
 button {
     width: 50px;
     height: 50px;
