@@ -43,8 +43,9 @@ function operate(a, b, operator) {
 }
 
 function lastOperationDisplay(firstValue, secondValue, operator) {
+    // update the previous operand display
     const operatorMap = document.querySelector(`[data-action="${operator}"]`).textContent;
-    
+
     return previousOperandDisplay.textContent = `${firstValue} ${operatorMap} ${secondValue} =`
 }
 
@@ -86,7 +87,10 @@ function updateDisplay(key, displayNum, calculator) {
     const previousKey = calculator.dataset.previousKey;
     const keyContent  = key.textContent;
 
+    // set the previousKey to the current keyType for future use
     calculator.dataset.previousKey = keyType;
+
+    // update the variables
     updateOperand(keyType, previousKey);
 
     if (keyType === 'number') {
@@ -119,7 +123,7 @@ function updateDisplay(key, displayNum, calculator) {
     }
 
     if (keyType === 'delete') {
-        if (displayNum.match(/^-?\d$/) || 
+        if (displayNum.match(/^-?\d$/) ||   // single digit number
         previousKey === 'clear' || 
         previousKey === 'operate' || 
         previousKey === 'plus-minus'
@@ -143,8 +147,11 @@ function updateDisplay(key, displayNum, calculator) {
 }
 
 function updateOperand(keyType, previousState) {
+    // update the variables
     if (keyType === 'number') {
         if (previousState === 'operate') {
+            // record the ans from previous operation
+            previousOperandDisplay.textContent = `Ans = ${firstOperand}`;
             firstOperand = null;
             operator = null;
         }
@@ -152,6 +159,7 @@ function updateOperand(keyType, previousState) {
 
     if (keyType === 'delete') {
         if (previousState === 'operator') operator = null;
+        if (previousState === 'operate' || previousState === 'plus-minus') previousOperandDisplay.textContent = `Ans = ${firstOperand}`;
     }
 
     if (keyType === 'plus-minus') {
@@ -164,6 +172,7 @@ function updateOperand(keyType, previousState) {
     }
 
     if (keyType === 'clear') {
+        previousOperandDisplay.textContent = 'Ans = 0';
         firstOperand = null;
         modValue = null;
         operator = null;
@@ -171,6 +180,7 @@ function updateOperand(keyType, previousState) {
 }
 
 function calculation(key, displayNum, previousState) {
+    // calculations for operate key and operator key
     const action = key.dataset.action;
     let firstValue = firstOperand;
     const selectedOperator = operator;
