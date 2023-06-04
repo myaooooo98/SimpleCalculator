@@ -37,8 +37,6 @@ function operate(a, b, operator) {
             return num1 * num2;
         case 'divide':
             return num1 / num2;
-        default:
-            return 0;
     }
 }
 
@@ -103,10 +101,7 @@ function updateDisplay(key, displayNum, calculator) {
     }
 
     if (keyType === 'decimal') {
-        if (
-            previousKey === 'operator' ||
-            previousKey === 'operate'
-        ) return '0.';
+        if (previousKey === 'operator' || previousKey === 'operate') return '0.';
         // ensure no '.' can be inputted after there already have decimal or '%' in the string
         if (!displayNum.includes('.') && !displayNum.includes('%')) return displayNum + keyContent;
 
@@ -124,9 +119,9 @@ function updateDisplay(key, displayNum, calculator) {
 
     if (keyType === 'delete') {
         if (displayNum.match(/^-?\d$/) ||   // single digit number
-        previousKey === 'clear' || 
-        previousKey === 'operate' || 
-        previousKey === 'plus-minus'
+            previousKey === 'clear' || 
+            previousKey === 'operate' || 
+            previousKey === 'plus-minus'
         ) {
             return '0';
         } else if (previousKey === 'operator') {
@@ -232,6 +227,7 @@ keys.addEventListener('click' , e => {
 
 // when user using keyboard
 window.addEventListener('keydown', e => {
+    e.preventDefault();     // to prevent the previous key is reinput again when enter is pressed
     let key = null;
     let targetBtn = null;
     const displayNum = currentOperandDisplay.textContent;
