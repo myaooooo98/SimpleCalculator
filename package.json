@@ -1,0 +1,29 @@
+{
+  "name": "calculator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "script.js",
+  "scripts": {
+    "test": "jest --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/myaooooo98/SimpleCalculator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/myaooooo98/SimpleCalculator/issues"
+  },
+  "homepage": "https://github.com/myaooooo98/SimpleCalculator#readme",
+  "devDependencies": {
+    "jest": "^29.5.0",
+    "jest-environment-jsdom": "^29.5.0",
+    "jsdom": "^22.1.0",
+    "text-encoding": "^0.7.0"
+  },
+  "jest": {
+    "testEnvironment": "jsdom"
+  }
+}
