@@ -51,7 +51,6 @@ describe('Calculator Functions', () => {
    const displayBox = document.getElementById('calculator-display');
    const previousOperandDisplay = displayBox.querySelector('.previous-operand');
    const currentOperandDisplay = displayBox.querySelector('.current-operand')
-   const keys = document.getElementById('calculator-keys');
 
    test('operate - perform mathematical operation correctly', () => {
       // test addition
@@ -91,12 +90,59 @@ describe('Calculator Functions', () => {
 
    test('updateDisplay - show correct display based on the inputted key', () => {
       // test number input
-      let key = document.querySelector('[data-number="5"]');
-      expect(updateDisplay(key, '0', calculator)).toBe('5');
-      expect(updateDisplay(key, '67.', calculator)).toBe('67.5');
-      expect(updateDisplay(key, '78%', calculator)).toBe('5');
+      let key1 = document.querySelector('[data-number="5"]');
+      expect(updateDisplay(key1, '0', calculator)).toBe('5');
+      expect(updateDisplay(key1, '67.', calculator)).toBe('67.5');
+      expect(updateDisplay(key1, '78%', calculator)).toBe('5');
 
+      // test decimal input
+      let key2 = document.querySelector('[data-action="decimal"]');
+      expect(updateDisplay(key2, '56.', calculator)).toBe('56.');
+      expect(updateDisplay(key2, '34%', calculator)).toBe('34%');
 
-      
+      // test input after operator
+      calculator.dataset.previousKey = 'operator';
+      expect(updateDisplay(key1, '78', calculator)).toBe('5');
+
+      // test input after operator
+      calculator.dataset.previousKey = 'operate';
+      expect(updateDisplay(key2, '906', calculator)).toBe('0.');
+
+      // test deleting input
+      let key3 = document.querySelector('[data-action="delete"]');
+      expect(updateDisplay(key3, '-8', calculator)).toBe('0');
+      expect(updateDisplay(key3, '-88', calculator)).toBe('-8');
+
+      calculator.dataset.previousKey = 'plus-minus';
+      expect(updateDisplay(key3, '-86', calculator)).toBe('0');      
+   });
+
+   test('calculation - perform correct operation', () => {
+      let key1 = document.querySelector('[data-action="multiply"]');
+      let key2 = document.querySelector('[data-action="add"]');
+      let key3 = document.querySelector('[data-action="operate"]');
+
+      // test operator
+      // when first operand is null
+      expect(calculation(key1, '2', 'number')).toBe(2);
+
+      // first operand = 2, operator = multiply
+      expect(calculation(key2, '2', 'number')).toBe(4);
+
+      // first operand = 4, operator = add
+      expect(calculation(key1, '6', 'number')).toBe(10);
+
+      // test equal sign
+      // first operand = 10, operator = multiply
+      expect(calculation(key3, '2', 'number')).toBe(20);
+
+      // first operand = 20, operator = multiply, mod value = 2
+      expect(calculation(key3, '20', 'operate')).toBe(40);
+      expect(calculation(key3, '40', 'operate')).toBe(80);
+   });
+
+   test('roundNum - rounding the number to correct decimals', () => {
+      expect(roundNum(12.4564222)).toBe(12.456422);
+      expect(roundNum(12.1000)).toBe(12.1);
    });
 });

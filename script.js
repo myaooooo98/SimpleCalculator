@@ -191,7 +191,7 @@ function calculation(key, displayNum, previousState) {
             previousState !== 'operator' &&
             previousState !== 'operate'
             ? roundNum(operate(firstValue, displayNum, selectedOperator))
-            : displayNum;
+            : +displayNum;
 
         operator = action;
         return firstOperand;
@@ -207,7 +207,7 @@ function calculation(key, displayNum, previousState) {
                 ? roundNum(operate(displayNum, modValue, selectedOperator))
                 : roundNum(operate(firstValue, displayNum, selectedOperator));
         } else {
-            firstOperand = displayNum;
+            firstOperand = +displayNum;
         }
         return firstOperand
     }
