@@ -143,6 +143,13 @@ function updateDisplay(key, displayNum, calculator) {
 
 function updateOperand(keyType, previousState) {
     // update the variables
+    const clearBtn = document.getElementById('AC/CE');
+
+    if (keyType !== 'clear') {
+        clearBtn.dataset.action = 'delete';
+        clearBtn.textContent = 'CE';
+    }
+
     if (keyType === 'number') {
         if (previousState === 'operate') {
             // record the ans from previous operation
@@ -154,7 +161,11 @@ function updateOperand(keyType, previousState) {
 
     if (keyType === 'delete') {
         if (previousState === 'operator') operator = null;
-        if (previousState === 'operate' || previousState === 'plus-minus') previousOperandDisplay.textContent = `Ans = ${firstOperand}`;
+        if (previousState === 'operate' || previousState === 'plus-minus') {
+            previousOperandDisplay.textContent = !firstOperand ? 'Ans = 0' : `Ans = ${firstOperand}`;
+            clearBtn.dataset.action = 'clear';
+            clearBtn.textContent = 'AC';
+        }
     }
 
     if (keyType === 'plus-minus') {
@@ -167,6 +178,8 @@ function updateOperand(keyType, previousState) {
     }
 
     if (keyType === 'clear') {
+        clearBtn.dataset.action = 'clear';
+        clearBtn.textContent = 'AC';
         previousOperandDisplay.textContent = 'Ans = 0';
         firstOperand = null;
         modValue = null;
@@ -186,7 +199,7 @@ function calculation(key, displayNum, previousState) {
         action === 'multiply' ||
         action === 'divide'
     ) {
-        firstOperand = firstValue &&
+        firstOperand = (firstValue || firstValue === 0) &&
             selectedOperator &&
             previousState !== 'operator' &&
             previousState !== 'operate'
@@ -198,11 +211,11 @@ function calculation(key, displayNum, previousState) {
     }
     
     if (action === 'operate') {
-        modValue = firstValue && previousState === 'operate'
+        modValue = (firstValue || firstValue === 0) && previousState === 'operate'
             ? modValue
             : displayNum;
             
-        if (firstValue) {
+        if (firstValue || firstValue === 0) {
             firstOperand = previousState === 'operate'
                 ? roundNum(operate(displayNum, modValue, selectedOperator))
                 : roundNum(operate(firstValue, displayNum, selectedOperator));

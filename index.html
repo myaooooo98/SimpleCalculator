@@ -18,30 +18,29 @@
             <div class="current-operand">0</div>
         </div>
         <div id="calculator-keys">
-            <button data-action="clear">C</button>
-            <button data-action="delete">DEL</button>
-            <div id="numberpad">
-                <button data-number="1">1</button>
-                <button data-number="2">2</button>
-                <button data-number="3">3</button>
-                <button data-number="4">4</button>
-                <button data-number="5">5</button>
-                <button data-number="6">6</button>
-                <button data-number="7">7</button>
-                <button data-number="8">8</button>
-                <button data-number="9">9</button>
-                <button data-number="0">0</button>
-            </div>
-            <button data-action="decimal">.</button>
-            <div id="operators">
-                <button data-action="add">+</button>
-                <button data-action="subtract">-</button>
-                <button data-action="multiply">&times;</button>
-                <button data-action="divide">÷</button>
-            </div>
+            <button id="AC/CE" data-action="clear">AC</button>
             <button data-action="plus-minus">+/-</button>
             <button data-action="percentage">%</button>
-            <button data-action="operate">=</button> 
+            <button class="operator" data-action="divide">÷</button>
+
+            <button data-number="7">7</button>
+            <button data-number="8">8</button>
+            <button data-number="9">9</button>
+            <button class="operator" data-action="multiply">&times;</button>
+
+            <button data-number="4">4</button>
+            <button data-number="5">5</button>
+            <button data-number="6">6</button>
+            <button class="operator" data-action="subtract">-</button>
+           
+            <button data-number="1">1</button>
+            <button data-number="2">2</button>
+            <button data-number="3">3</button>
+            <button class="operator" data-action="add">+</button>
+
+            <button data-number="0">0</button>
+            <button data-action="decimal">.</button>
+            <button class="span-2" data-action="operate">=</button> 
         </div>
     </div>
     <footer>
