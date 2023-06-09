@@ -3,6 +3,7 @@ const displayBox = document.getElementById('calculator-display');
 const previousOperandDisplay = displayBox.querySelector('.previous-operand');
 const currentOperandDisplay = displayBox.querySelector('.current-operand')
 const keys = document.getElementById('calculator-keys');
+const operators = document.querySelectorAll('.operator');
 
 const keydownMapper = {
     '+': 'add',
@@ -88,6 +89,9 @@ function updateDisplay(key, displayNum, calculator) {
     // set the previousKey to the current keyType for future use
     calculator.dataset.previousKey = keyType;
 
+    // remove all active class in operators
+    operators.forEach(k => k.classList.remove('active'));
+
     // update the variables
     updateOperand(keyType, previousKey);
 
@@ -110,12 +114,11 @@ function updateDisplay(key, displayNum, calculator) {
     }
 
     if (keyType === 'operator' || keyType === 'operate') {
+        key.classList.add('active');
         return calculation(key, displayNum, previousKey);
     }
 
-    if (keyType === 'clear') {
-        return '0';
-    }
+    if (keyType === 'clear') return '0';
 
     if (keyType === 'delete') {
         if (displayNum.match(/^-?\d$/) ||   // single digit number
@@ -131,9 +134,7 @@ function updateDisplay(key, displayNum, calculator) {
         }
     }
 
-    if (keyType === 'plus-minus') {
-        return displayNum *= -1;
-    }
+    if (keyType === 'plus-minus') return displayNum *= -1;
 
     if (keyType === 'percentage') {
         if (!displayNum.includes('%')) return displayNum + keyContent;
@@ -243,7 +244,7 @@ window.addEventListener('keydown', e => {
     // to prevent the previous key is reinput again when enter is pressed
     if (e.key === 'Enter') e.preventDefault();     
     let key = null;
-    let targetBtn = null;
+    let targetBtn = null; 
     const displayNum = currentOperandDisplay.textContent;
 
     if (e.key >= 0 && e.key <= 9) {

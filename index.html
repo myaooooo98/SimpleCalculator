@@ -7,20 +7,18 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js" defer></script>
     <title>Calculator</title>
+    <link rel="icon" href="./icons8-calculator-ios-16-filled-32.png">
 </head>
 <body>
-    <header>
-        <h1>Calculator</h1>
-    </header>
     <div class="calculator">
         <div id="calculator-display">
             <div class="previous-operand">Ans = 0</div>
             <div class="current-operand">0</div>
         </div>
         <div id="calculator-keys">
-            <button id="AC/CE" data-action="clear">AC</button>
-            <button data-action="plus-minus">+/-</button>
-            <button data-action="percentage">%</button>
+            <button class="feature" id="AC/CE" data-action="clear">AC</button>
+            <button class="feature" data-action="plus-minus">+/-</button>
+            <button class="feature" data-action="percentage">%</button>
             <button class="operator" data-action="divide">÷</button>
 
             <button data-number="7">7</button>
@@ -40,11 +38,11 @@
 
             <button data-number="0">0</button>
             <button data-action="decimal">.</button>
-            <button class="span-2" data-action="operate">=</button> 
+            <button class="operator span-2" data-action="operate">=</button> 
         </div>
     </div>
     <footer>
-        <p>Designed by Lee Min Yao</p>
+        <p>Created by <a href="https://github.com/myaooooo98/SimpleCalculator">myaooooo98</a></p>
     </footer>
 </body>
 </html>
